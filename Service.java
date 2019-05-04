@@ -9,48 +9,48 @@ import java.net.UnknownHostException;
 
 class Fen {
     Fen() {
-        System.out.println("fen construuctor");
+        logger.info("fen construuctor");
 
     }
     void fen() {
-        System.out.println("Fen method");
+        logger.info("Fen method");
     }
 }
 
 class Fin {
     void fin() {
-        System.out.println("Fin method");
+        logger.info("Fin method");
     }
 }
 
 class Fon {
     void fon() {
-        System.out.println("Fon method");
+        logger.info("Fon method");
     } 
 }
 
 class Fan {
     void fan() {
-        System.out.println("Fan method");
+        logger.info("Fan method");
     }
     public void run() {
-        System.out.println("run");
+        logger.info("run");
     }
 }
 
 
 public class Service {
     Service() {
-        System.out.println("Fun ");
+        logger.info("Fun ");
     }
     void fun() throws UnknownHostException, IOException {
-        System.out.println("Fun mathod");
+        logger.info("Fun mathod");
         Socket socket = new Socket("127.0.0.1", 3306);
         InetAddress x = socket.getInetAddress();
-        System.out.println(x.getHostAddress());
+        logger.info(x.getHostAddress());
         
 
-        System.out.println("\n\n Connection Tried ");
+        logger.info("\n\n Connection Tried ");
 
     }
     public static void main(String[] args) {

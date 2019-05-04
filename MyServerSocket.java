@@ -4,7 +4,14 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+
 public class MyServerSocket {
+    
+    private static final Logger logger = Logger.getLogger(MyServerSocket.class.getName());
+    
     private ServerSocket server;
 
     public MyServerSocket(String ipAddress) throws Exception {
@@ -18,11 +25,11 @@ public class MyServerSocket {
         String data = null;
         Socket client = this.server.accept();
         String clientAddress = client.getInetAddress().getHostAddress();
-        System.out.println("\r\nNew connection from " + clientAddress);
+        logger.info("\r\nNew connection from " + clientAddress);
 
         BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
         while ((data = in.readLine()) != null) {
-            System.out.println("\r\nMessage from " + clientAddress + ": " + data);
+            logger.info("\r\nMessage from " + clientAddress + ": " + data);
         }
     }
 
@@ -34,9 +41,13 @@ public class MyServerSocket {
         return this.server.getLocalPort();
     }
 
+
     public static void main(String[] args) throws Exception {
+
+        logger.info(" ");
+        
         MyServerSocket app = new MyServerSocket(args[0]);
-        System.out.println(
+        logger.info(
                 "\r\nRunning Server: " + "Host=" + app.getSocketAddress().getHostAddress() + " Port=" + app.getPort());
 
         app.listen();

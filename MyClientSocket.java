@@ -4,7 +4,13 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Scanner;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class MyClientSocket {
+
+    private static final Logger logger = Logger.getLogger(MyServerSocket.class.getName());
+
     private Socket socket;
     private Scanner scanner;
 
@@ -26,7 +32,7 @@ public class MyClientSocket {
     public static void main(String[] args) throws Exception {
         MyClientSocket client = new MyClientSocket(InetAddress.getByName(args[0]), Integer.parseInt(args[1]));
 
-        System.out.println("\r\nConnected to Server: " + client.socket.getInetAddress());
+        logger.info("\r\nConnected to Server: " + client.socket.getInetAddress());
         client.start();
     }
 }
