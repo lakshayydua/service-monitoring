@@ -46,7 +46,8 @@ public class Service {
     void fun() throws UnknownHostException, IOException {
         System.out.println("Fun mathod");
         Socket socket = new Socket("127.0.0.1", 3306);
-        x = socket.getInetAddress();
+        InetAddress x = socket.getInetAddress();
+        System.out.println(x.getHostAddress());
         
 
         System.out.println("\n\n Connection Tried ");
