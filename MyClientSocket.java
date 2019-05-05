@@ -9,12 +9,16 @@ import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.sun.org.apache.bcel.internal.generic.InstructionConstants.Clinit;
+
 public class MyClientSocket {
 
     public static Logger logger = Logger.getLogger("CustomLogger"); 
     public static Scanner sc = new Scanner(System.in);
     String host_ip  = "127.0.0.1";
     int port_no  = 3306;
+
+    int try_reconnection_user_response = 1;
 
 
     public MyClientSocket(){
@@ -54,8 +58,32 @@ public class MyClientSocket {
         return this.port_no;
     }
 
+    public void get_connection(){
+        // Poll till user connects to a running service
+        // Prompt user to enter Host IP and Port Number again or quite program
+        do{
+            try{
+                this.get_host_ip();
+                this.get_port_number();
+                this.EstablishTCPConnectionToServer(InetAddress.getByName(this.host_ip), this.port_no);
+            }
+            catch (Exception e){
+                System.out.println(e + "\n");
+                logger.info("-------------------------------------------------------------");
+                logger.info("No Service is Running for Provided Host IP and Port Number");
+                logger.info("-------------------------------------------------------------\n");
+            }
+            logger.info("Do you want to try connneting to a service with different Host IP and Port Number? (1 for Yes / 0 for No)\n");
+            try_reconnection_user_response = sc.nextInt();
+            sc.nextLine();
+        }while(try_reconnection_user_response == 1);
+    
+        logger.info("Connected to Server: " + this.socket.getInetAddress());
+    }
 
-    private void start() throws IOException {
+    
+
+    public void start() throws IOException {
         String input;
         while (true) {
             input = scanner.nextLine();
@@ -68,34 +96,9 @@ public class MyClientSocket {
     public static void main(String[] args) throws Exception {
         MyClientSocket client = new MyClientSocket();
 
-        logger.info("---------------------------------------------------");
-        logger.info("---------------------CLIENT SIDE-------------------");
-        logger.info("---------------------------------------------------");
-        
-        String host_ip;
-        int port_no;
-        int try_reconnection_user_response = 1;
-        
-        // Poll till user connects to a running service
-        // Prompt user to enter Host IP and Port Number again or quite program
-        do{
-            try{
-                host_ip = client.get_host_ip();
-                port_no = client.get_port_number();
-                client.EstablishTCPConnectionToServer(InetAddress.getByName(host_ip), port_no);
-            }
-            catch (Exception e){
-                System.out.println(e + "\n");
-                logger.info("---------------------------------------------------");
-                logger.info("No service is running for provided host and port no provided");
-                logger.info("---------------------------------------------------\n");
-            }
-            logger.info("Do you want to try connneting to a service with different Host IP and Port Number? (1 for Yes / 0 for No)\n");
-            try_reconnection_user_response = sc.nextInt();
-            sc.nextLine();
-        }while(try_reconnection_user_response == 1);
-    
-        logger.info("Connected to Server: " + client.socket.getInetAddress());
+        client.get_connection();
         client.start();
+        
+
     }
 }
