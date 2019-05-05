@@ -4,19 +4,35 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Scanner;
 
+import java.util.logging.ConsoleHandler;
+import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class MyClientSocket {
 
-    private static final Logger logger = Logger.getLogger(MyServerSocket.class.getName());
+    public static Logger logger = Logger.getLogger("CustomLogger"); 
+
+    public MyClientSocket(){
+
+        logger.setUseParentHandlers(false);
+        logger.setLevel(Level.ALL);
+
+        ConsoleHandler ch = new ConsoleHandler();
+        ch.setFormatter(new CustomFormatter());
+        logger.addHandler(ch);
+
+        //ch.close();
+    }
 
     private Socket socket;
     private Scanner scanner;
 
-    private MyClientSocket(InetAddress serverAddress, int serverPort) throws Exception {
+    private Socket EstablishTCPConnectionToServer(InetAddress serverAddress, int serverPort) throws Exception {
         this.socket = new Socket(serverAddress, serverPort);
         this.scanner = new Scanner(System.in);
+
+        return this.socket;
     }
 
     private void start() throws IOException {
@@ -30,7 +46,8 @@ public class MyClientSocket {
     }
 
     public static void main(String[] args) throws Exception {
-        MyClientSocket client = new MyClientSocket(InetAddress.getByName(args[0]), Integer.parseInt(args[1]));
+        MyClientSocket client = new MyClientSocket()
+        client.EstablishTCPConnectionToServer(InetAddress.getByName(args[0]), Integer.parseInt(args[1]));
 
         logger.info("\r\nConnected to Server: " + client.socket.getInetAddress());
         client.start();

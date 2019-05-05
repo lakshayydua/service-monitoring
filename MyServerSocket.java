@@ -12,7 +12,6 @@ import java.util.logging.Logger;
 
 public class MyServerSocket {
 
-    // please change name of your own choice
     public static Logger logger = Logger.getLogger("CustomLogger"); 
 
     public MyServerSocket(){
@@ -30,7 +29,7 @@ public class MyServerSocket {
 
     private ServerSocket server;
 
-    public ServerSocket EstablishTCPConnection(String ipAddress, Integer portNo) throws Exception {
+    public ServerSocket StartServer(String ipAddress, Integer portNo) throws Exception {
         if (ipAddress != null && !ipAddress.isEmpty())
             this.server = new ServerSocket(portNo, 1, InetAddress.getByName(ipAddress));
         else
@@ -63,15 +62,19 @@ public class MyServerSocket {
         
         MyServerSocket app = new MyServerSocket();
 
+        logger.info("---------------------------------------------------");
+        
+        logger.info("---------------------------------------------------");
+
         Scanner sc = new Scanner(System.in);
 
-        logger.info("Input Host IP Address - ");
+        logger.info("Input Host IP Address (preferrably 127.0.0.1)- ");
         String host_ip = sc.nextLine();
 
         logger.info("Input Port Number - ");
         Integer port_no = sc.nextInt();
 
-        app.EstablishTCPConnection(host_ip, port_no);
+        app.StartServer(host_ip, port_no);
 
         logger.info(
                 "Running Server - " + "Host=" + app.getSocketAddress().getHostAddress() + " ; Port=" + app.getPort());
@@ -79,5 +82,4 @@ public class MyServerSocket {
         app.listen();
         sc.close();
     }
-
 }
