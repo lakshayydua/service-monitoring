@@ -3,27 +3,40 @@ import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Scanner; 
+import java.util.Scanner;
 
+import java.util.logging.ConsoleHandler;
+import java.util.logging.FileHandler;
 import java.util.logging.Level;
-import java.util.logging.*;
-import java.util.logging.ConsoleHandler.*;
-
+import java.util.logging.Logger;
 
 public class MyServerSocket {
-    
-    java.util.logging.ConsoleHandler.formatter = com.mycomp.myproj.LogFormatter;    
-    private static final Logger logger = Logger.getLogger(MyServerSocket.class.getName());
-    
-    
-    
+
+    // please change name of your own choice
+    public static Logger logger = Logger.getLogger("CustomLogger"); 
+
+    public MyServerSocket(){
+
+        logger.setUseParentHandlers(false);
+        logger.setLevel(Level.ALL);
+
+        //FileHandler handler = new FileHandler("logging.properties");
+        ConsoleHandler ch = new ConsoleHandler();
+        ch.setFormatter(new CustomFormatter()); // set formatter
+        logger.addHandler(ch);
+
+        //ch.close();
+    }
+
     private ServerSocket server;
 
-    public MyServerSocket(String ipAddress, Integer portNo) throws Exception {
+    public ServerSocket EstablishTCPConnection(String ipAddress, Integer portNo) throws Exception {
         if (ipAddress != null && !ipAddress.isEmpty())
             this.server = new ServerSocket(portNo, 1, InetAddress.getByName(ipAddress));
         else
             this.server = new ServerSocket(0, 1, InetAddress.getLocalHost());
+
+        return this.server;
     }
 
     private void listen() throws Exception {
@@ -46,22 +59,25 @@ public class MyServerSocket {
         return this.server.getLocalPort();
     }
 
-
     public static void main(String[] args) throws Exception {
+        
+        MyServerSocket app = new MyServerSocket();
 
         Scanner sc = new Scanner(System.in);
-        
+
         logger.info("Input Host IP Address - ");
         String host_ip = sc.nextLine();
-        
+
         logger.info("Input Port Number - ");
         Integer port_no = sc.nextInt();
-        
-        MyServerSocket app = new MyServerSocket(host_ip, port_no);
+
+        app.EstablishTCPConnection(host_ip, port_no);
+
         logger.info(
                 "Running Server - " + "Host=" + app.getSocketAddress().getHostAddress() + " ; Port=" + app.getPort());
 
         app.listen();
         sc.close();
     }
+
 }

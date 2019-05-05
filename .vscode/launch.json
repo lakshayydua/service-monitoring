@@ -1,0 +1,11 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - XX",
+            "request": "launch",
+            "mainClass": "XX",
+            "projectName": "service-monitoring_621d808c"
+        }
+    ]
+}

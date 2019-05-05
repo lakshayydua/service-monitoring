@@ -7,7 +7,7 @@ public class CustomFormatter extends Formatter {
     public String format(LogRecord record) {
         StringBuffer buffer = new StringBuffer();
         
-        buffer.append(record.getSourceClassName() + ":" + record.getSourceMethodName() + ":" + record.getLevel() + ":" + record.getMessage());
+        buffer.append(record.getLevel() + ":" + record.getSourceClassName() + ":" + record.getSourceMethodName() + ": "  + record.getMessage() + "\n");
         return buffer.toString();
     }
 
