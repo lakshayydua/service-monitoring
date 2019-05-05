@@ -63,7 +63,7 @@ public class MyServerSocket {
         MyServerSocket app = new MyServerSocket();
 
         logger.info("---------------------------------------------------");
-        
+        logger.info("--------------------SERVER SIDE--------------------");
         logger.info("---------------------------------------------------");
 
         Scanner sc = new Scanner(System.in);

@@ -46,8 +46,21 @@ public class MyClientSocket {
     }
 
     public static void main(String[] args) throws Exception {
-        MyClientSocket client = new MyClientSocket()
-        client.EstablishTCPConnectionToServer(InetAddress.getByName(args[0]), Integer.parseInt(args[1]));
+        MyClientSocket client = new MyClientSocket();
+
+        logger.info("---------------------------------------------------");
+        logger.info("---------------------CLIENT SIDE-------------------");
+        logger.info("---------------------------------------------------");
+
+        Scanner sc = new Scanner(System.in);
+
+        logger.info("Provide input for \"Host IP Address\" (preferrably 127.0.0.1)- ");
+        String host_ip = sc.nextLine();
+
+        logger.info("Provide input for \"Port Number\" - ");
+        int port_no = sc.nextInt();
+
+        client.EstablishTCPConnectionToServer(InetAddress.getByName(host_ip), port_no);
 
         logger.info("\r\nConnected to Server: " + client.socket.getInetAddress());
         client.start();
