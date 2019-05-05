@@ -74,33 +74,38 @@ public class ServiceMonitoring {
     }
 
     public static void main(String[] args) throws Exception {
-        ServiceMonitoring sm = new ServiceMonitoring();
+        
+        MyClientSocket cs = new MyClientSocket();
 
         logger.info("---------------------------------------------------");
-        logger.info("---------------------WELCOME-----------------------");
+        logger.info("-------------------- WELCOME ----------------------");
         logger.info("---------------------------------------------------\n");
 
         int user_service_choice_input = 1;
 
         do {
+            logger.info("==================== MENU ==================");
             logger.info("Choose Service Monitoring Component - ");
             logger.info("1. Establish a connection to Host IP and Port Number");
             logger.info("2. Register a service with a polling frequency");
             logger.info("3. See data");
             logger.info("4. Exit");
+            logger.info("============================================\n");
             System.out.print("Your Choice - ");
                 
             try {
                 user_service_choice_input = sc.nextInt();
-                sc.nextLine();
+                System.out.println();
             }
             catch (Exception e) {
                 logger.info("Illegal Value");
             }
 
+            sc.nextLine();
+
             switch(user_service_choice_input) {
                 case 1:
-                    
+                    cs.get_connection();
                     break;
                 case 2:
                     logger.info("b");

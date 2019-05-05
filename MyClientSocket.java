@@ -16,8 +16,6 @@ public class MyClientSocket {
     String host_ip  = "127.0.0.1";
     int port_no  = 3306;
 
-    int try_reconnection_user_response = 1;
-
 
     public MyClientSocket(){
 
@@ -57,36 +55,25 @@ public class MyClientSocket {
     }
 
     public void get_connection() {
-        // Poll till user connects to a running service
-        // Prompt user to enter Host IP and Port Number again or quite program
-        do{
-            try{
-                host_ip = get_host_ip();
-                port_no = get_port_number();
-                
-                try{
-                    this.EstablishTCPConnectionToServer(InetAddress.getByName(host_ip), port_no);
-                }
-                catch (Exception e) {
-                    logger.info("Connection Not Established");
-                    System.out.println(e);
-                }
+        
+        try {
 
-            }
-            catch (Exception e) {
-                System.out.println(e + "\n");
-                logger.info("-------------------------------------------------------------");
-                logger.info("No Service is Running for Provided Host IP and Port Number");
-                logger.info("-------------------------------------------------------------\n");
-            }
+            host_ip = get_host_ip();
+            port_no = get_port_number();
+            this.EstablishTCPConnectionToServer(InetAddress.getByName(host_ip), port_no);
+            System.out.println();
+            logger.info("-------------------------------------------------------------");
+            logger.info("Connected to Server: " + this.socket.getInetAddress());
+            logger.info("-------------------------------------------------------------\n");
+        }
+        catch (Exception e) {
+            System.out.println(e + "\n");
+            logger.info("-------------------------------------------------------------");
+            logger.info("No Service is Running for Provided Host IP and Port Number");
+            logger.info("-------------------------------------------------------------\n");
+        }
             
-            // System.out.print("Do you want to try connneting to a service with different Host IP and Port Number? (1 for Yes / 0 for No) -\n");
-            // try_reconnection_user_response = sc.nextInt();
-            // sc.nextLine();
-
-        }while(try_reconnection_user_response == 1);
-    
-        logger.info("Connected to Server: " + this.socket.getInetAddress());
+        
     }
 
     public void start() throws IOException {
