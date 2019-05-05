@@ -44,14 +44,14 @@ public class MyClientSocket {
     }
 
     private String get_host_ip() {
-        logger.info("Provide input for \"Host IP Address\" (preferrably 127.0.0.1)- ");
+        System.out.print("Provide Input for \"Host IP Address\" (preferrably 127.0.0.1) - ");
         this.host_ip = sc.nextLine();
 
         return this.host_ip;
     }
 
     private Integer get_port_number() {
-        logger.info("Provide input for \"Port Number\" - ");
+        System.out.print("Provide Input for \"Port Number\" - ");
         this.port_no = sc.nextInt();
         sc.nextLine();
 
@@ -73,7 +73,7 @@ public class MyClientSocket {
                 logger.info("No Service is Running for Provided Host IP and Port Number");
                 logger.info("-------------------------------------------------------------\n");
             }
-            logger.info("Do you want to try connneting to a service with different Host IP and Port Number? (1 for Yes / 0 for No)\n");
+            System.out.print("Do you want to try connneting to a service with different Host IP and Port Number? (1 for Yes / 0 for No) -\n");
             try_reconnection_user_response = sc.nextInt();
             sc.nextLine();
         }while(try_reconnection_user_response == 1);

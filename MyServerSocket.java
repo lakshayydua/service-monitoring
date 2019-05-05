@@ -64,14 +64,14 @@ public class MyServerSocket {
 
         logger.info("---------------------------------------------------");
         logger.info("--------------------SERVER SIDE--------------------");
-        logger.info("---------------------------------------------------");
+        logger.info("---------------------------------------------------\n");
 
         Scanner sc = new Scanner(System.in);
 
-        logger.info("Input Host IP Address (preferrably 127.0.0.1)- ");
+        System.out.print("Input Host IP Address (preferrably 127.0.0.1)- ");
         String host_ip = sc.nextLine();
 
-        logger.info("Input Port Number - ");
+        System.out.print("Input Port Number - ");
         Integer port_no = sc.nextInt();
 
         app.StartServer(host_ip, port_no);
