@@ -45,52 +45,58 @@ public class ServiceMonitoring {
     synchronized void scheduleFetch() {
         fetch = true;
         notify();
+        System.out.print("zxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
     }
 
-    synchronized boolean awaitFetch() throws InterruptedException {
-        long WAIT_LIMIT = 20000;
-        if (!fetch)
-            wait(WAIT_LIMIT);
-        try {
-            return fetch;
-        } finally {
-            fetch = false;
-        }
-    }
+    // synchronized boolean awaitFetch() throws InterruptedException {
+    //     long WAIT_LIMIT = 20000;
+    //     if (!fetch)
+    //         wait(WAIT_LIMIT);
+    //     try {
+    //         return fetch;
+    //     } finally {
+    //         fetch = false;
+    //     }
+    // }
 
-    Boolean doFetch() {
-        // try{
-        // this.EstablishTCPConnectionToServer(InetAddress.getByName(host_ip), port_no);
-        // }
-        // catch (Exception e) {
-        // logger.info("Connection Not Established");
-        // System.out.println(e);
-        // }
-        return true;
-    }
+    // Boolean doFetch() {
+    //     // try{
+    //     // this.EstablishTCPConnectionToServer(InetAddress.getByName(host_ip), port_no);
+    //     // }
+    //     // catch (Exception e) {
+    //     // System.out.println("Connection Not Established");
+    //     // System.out.println(e);
+    //     // }
+    //     return true;
+    // }
 
-    Boolean poll() throws InterruptedException {
-        return awaitFetch() ? doFetch() : false;
-    }
+    // Boolean poll() throws InterruptedException {
+    //     return awaitFetch() ? doFetch() : false;
+    // }
 
     public static void main(String[] args) throws Exception {
-        
-        MyClientSocket cs = new MyClientSocket();
 
-        logger.info("---------------------------------------------------");
-        logger.info("-------------------- WELCOME ----------------------");
-        logger.info("---------------------------------------------------\n");
+        // Call constructor to customise logger properties
+        new ServiceMonitoring(); 
+        System.out.println("---------------------------------------------------");
+        System.out.println("-------------------- WELCOME ----------------------");
+        System.out.println("---------------------------------------------------\n");
 
         int user_service_choice_input = 1;
+        String host_ip;
+        int port_no;
+        int poll_frequency;
+        
+        
 
         do {
-            logger.info("==================== MENU ==================");
-            logger.info("Choose Service Monitoring Component - ");
-            logger.info("1. Establish a connection to Host IP and Port Number");
-            logger.info("2. Register a service with a polling frequency");
-            logger.info("3. See data");
-            logger.info("4. Exit");
-            logger.info("============================================\n");
+            System.out.println("==================== MENU ==================");
+            System.out.println("Choose Service Monitoring Component - ");
+            System.out.println("1. Establish a connection to Host IP and Port Number");
+            System.out.println("2. Register a service with a polling frequency");
+            System.out.println("3. See data");
+            System.out.println("4. Exit");
+            System.out.println("============================================\n");
             System.out.print("Your Choice - ");
                 
             try {
@@ -98,30 +104,39 @@ public class ServiceMonitoring {
                 System.out.println();
             }
             catch (Exception e) {
-                logger.info("Illegal Value");
+                System.out.println("Illegal Value");
             }
 
             sc.nextLine();
 
             switch(user_service_choice_input) {
                 case 1:
-                    cs.get_connection();
+                    MyClientSocket cs = new MyClientSocket();
+                    host_ip = cs.get_host_ip();
+                    port_no = cs.get_port_number();
+                    cs.get_connection(host_ip, port_no, false, 0);
                     break;
+
                 case 2:
-                    logger.info("b");
+                    MyClientSocket cs1 = new MyClientSocket();
+                    host_ip = cs1.get_host_ip();
+                    port_no = cs1.get_port_number();
+                    poll_frequency = cs1.get_poll_frequency();
+                    cs1.get_connection(host_ip, port_no, true, poll_frequency);
+                    TimeUnit.SECONDS.sleep(10);
                     break;
 
                 case 3:
-                    logger.info("b");
+                    System.out.println("b");
                     break;
 
                 case 4:
-                    logger.info("Thank you for trying out the Service Monitoring Tool");
+                    System.out.println("Thank you for trying out the Service Monitoring Tool");
                     
                     break;
 
                 default:
-                    logger.info("Incorrect Choice");
+                    System.out.println("Incorrect Choice");
                     break;
             }
     

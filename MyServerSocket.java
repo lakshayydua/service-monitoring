@@ -42,11 +42,11 @@ public class MyServerSocket {
         String data = null;
         Socket client = this.server.accept();
         String clientAddress = client.getInetAddress().getHostAddress();
-        logger.info(" New connection from - " + clientAddress);
+        System.out.println(" New connection from - " + clientAddress);
 
         BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
         while ((data = in.readLine()) != null) {
-            logger.info(" Message from - " + clientAddress + ": " + data);
+            System.out.println(" Message from - " + clientAddress + ": " + data);
         }
     }
 
@@ -62,9 +62,9 @@ public class MyServerSocket {
         
         MyServerSocket app = new MyServerSocket();
 
-        logger.info("---------------------------------------------------");
-        logger.info("--------------------SERVER SIDE--------------------");
-        logger.info("---------------------------------------------------\n");
+        System.out.println("---------------------------------------------------");
+        System.out.println("--------------------SERVER SIDE--------------------");
+        System.out.println("---------------------------------------------------\n");
 
         Scanner sc = new Scanner(System.in);
 
@@ -76,7 +76,7 @@ public class MyServerSocket {
 
         app.StartServer(host_ip, port_no);
 
-        logger.info(
+        System.out.println(
                 "Running Server - " + "Host=" + app.getSocketAddress().getHostAddress() + " ; Port=" + app.getPort());
 
         app.listen();
