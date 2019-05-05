@@ -9,8 +9,6 @@ import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.sun.org.apache.bcel.internal.generic.InstructionConstants.Clinit;
-
 public class MyClientSocket {
 
     public static Logger logger = Logger.getLogger("CustomLogger"); 
@@ -82,9 +80,9 @@ public class MyClientSocket {
                 logger.info("-------------------------------------------------------------\n");
             }
             
-            System.out.print("Do you want to try connneting to a service with different Host IP and Port Number? (1 for Yes / 0 for No) -\n");
-            try_reconnection_user_response = sc.nextInt();
-            sc.nextLine();
+            // System.out.print("Do you want to try connneting to a service with different Host IP and Port Number? (1 for Yes / 0 for No) -\n");
+            // try_reconnection_user_response = sc.nextInt();
+            // sc.nextLine();
 
         }while(try_reconnection_user_response == 1);
     
