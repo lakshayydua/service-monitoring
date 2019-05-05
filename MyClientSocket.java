@@ -26,7 +26,6 @@ public class MyClientSocket {
         ch.setFormatter(new CustomFormatter());
         logger.addHandler(ch);
 
-        
         //ch.close();
     }
 
@@ -75,8 +74,10 @@ public class MyClientSocket {
         
         String host_ip;
         int port_no;
-        int user_response = 1;
-
+        int try_reconnection_user_response = 1;
+        
+        // Poll till user connects to a running service
+        // Prompt user to enter Host IP and Port Number again or quite program
         do{
             try{
                 host_ip = client.get_host_ip();
@@ -89,10 +90,10 @@ public class MyClientSocket {
                 logger.info("No service is running for provided host and port no provided");
                 logger.info("---------------------------------------------------\n");
             }
-            logger.info("Do you want to try connneting to a service with different host ip and port number? (1 for Yes / 0 for No)\n");
-            user_response = sc.nextInt();
+            logger.info("Do you want to try connneting to a service with different Host IP and Port Number? (1 for Yes / 0 for No)\n");
+            try_reconnection_user_response = sc.nextInt();
             sc.nextLine();
-        }while(user_response == 1);
+        }while(try_reconnection_user_response == 1);
     
         logger.info("Connected to Server: " + client.socket.getInetAddress());
         client.start();
