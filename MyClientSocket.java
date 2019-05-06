@@ -75,6 +75,12 @@ public class MyClientSocket implements Runnable {
         poll_frequency = sc.nextInt();
         sc.nextLine();
 
+        while (poll_frequency < 1) {
+            System.out.print("Provide Input for \"Poll Frequency\" (Seconds) [>1] - ");
+            poll_frequency = sc.nextInt();
+            sc.nextLine();
+        }
+        
         return poll_frequency;
     }
 
