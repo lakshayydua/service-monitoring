@@ -8,7 +8,9 @@ import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
+import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -49,35 +51,36 @@ public class ServiceMonitoring {
     }
 
     // synchronized boolean awaitFetch() throws InterruptedException {
-    //     long WAIT_LIMIT = 20000;
-    //     if (!fetch)
-    //         wait(WAIT_LIMIT);
-    //     try {
-    //         return fetch;
-    //     } finally {
-    //         fetch = false;
-    //     }
+    // long WAIT_LIMIT = 20000;
+    // if (!fetch)
+    // wait(WAIT_LIMIT);
+    // try {
+    // return fetch;
+    // } finally {
+    // fetch = false;
+    // }
     // }
 
     // Boolean doFetch() {
-    //     // try{
-    //     // this.EstablishTCPConnectionToServer(InetAddress.getByName(host_ip), port_no);
-    //     // }
-    //     // catch (Exception e) {
-    //     // System.out.println("Connection Not Established");
-    //     // System.out.println(e);
-    //     // }
-    //     return true;
+    // // try{
+    // // this.EstablishTCPConnectionToServer(InetAddress.getByName(host_ip),
+    // port_no);
+    // // }
+    // // catch (Exception e) {
+    // // System.out.println("Connection Not Established");
+    // // System.out.println(e);
+    // // }
+    // return true;
     // }
 
     // Boolean poll() throws InterruptedException {
-    //     return awaitFetch() ? doFetch() : false;
+    // return awaitFetch() ? doFetch() : false;
     // }
 
     public static void main(String[] args) throws Exception {
 
         // Call constructor to customise logger properties
-        new ServiceMonitoring(); 
+        new ServiceMonitoring();
         System.out.println("---------------------------------------------------");
         System.out.println("-------------------- WELCOME ----------------------");
         System.out.println("---------------------------------------------------\n");
@@ -86,8 +89,10 @@ public class ServiceMonitoring {
         String host_ip;
         int port_no;
         int poll_frequency;
-        
-        
+
+        List<MyClientSocket> client_list = new ArrayList<>();
+        int client_index = 0;        
+
 
         do {
             System.out.println("==================== MENU ==================");
@@ -98,59 +103,70 @@ public class ServiceMonitoring {
             System.out.println("4. Exit");
             System.out.println("============================================\n");
             System.out.print("Your Choice - ");
-                
+
             try {
                 user_service_choice_input = sc.nextInt();
                 System.out.println();
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 System.out.println("Illegal Value");
             }
 
             sc.nextLine();
 
-            switch(user_service_choice_input) {
-                case 1:
-                    MyClientSocket cs = new MyClientSocket();
-                    host_ip = cs.get_host_ip();
-                    port_no = cs.get_port_number();
-                    cs.get_connection(host_ip, port_no, false, 0);
-                    break;
+            switch (user_service_choice_input) {
+            case 1:
+                MyClientSocket cs = new MyClientSocket();
+                host_ip = cs.get_host_ip();
+                port_no = cs.get_port_number();
+                cs.get_connection(host_ip, port_no, false, 0);
+                break;
 
-                case 2:
-                    MyClientSocket cs1 = new MyClientSocket();
-                    host_ip = cs1.get_host_ip();
-                    port_no = cs1.get_port_number();
-                    poll_frequency = cs1.get_poll_frequency();
-                    cs1.get_connection(host_ip, port_no, true, poll_frequency);
-                    TimeUnit.SECONDS.sleep(10);
-                    break;
+            case 2:
+                System.out.println(client_index);
+                client_list.add(client_index, new MyClientSocket());
+            
+                host_ip = client_list.get(client_index).get_host_ip();
+                port_no = client_list.get(client_index).get_port_number();
+                poll_frequency = client_list.get(client_index).get_poll_frequency();
+                client_list.get(client_index).get_connection(host_ip, port_no, true, poll_frequency);
+                
+                client_index = client_index + 1;
+                System.out.println(client_index);
 
-                case 3:
-                    System.out.println("b");
-                    break;
+                // MyClientSocket cs1 = new MyClientSocket();
+                // host_ip = cs1.get_host_ip();
+                // port_no = cs1.get_port_number();
+                // poll_frequency = cs1.get_poll_frequency();
+                // cs1.get_connection(host_ip, port_no, true, poll_frequency);
+                
+                // MyClientSocket cs2 = new MyClientSocket();
+                // host_ip = cs2.get_host_ip();
+                // port_no = cs2.get_port_number();
+                // poll_frequency = cs2.get_poll_frequency();
+                // cs2.get_connection(host_ip, port_no, true, poll_frequency);
 
-                case 4:
-                    System.out.println("Thank you for trying out the Service Monitoring Tool");
-                    
-                    break;
+                break;
 
-                default:
-                    System.out.println("Incorrect Choice");
-                    break;
+            case 3:
+                System.out.println("b");
+                break;
+
+            case 4:
+                System.out.println("Thank you for trying out the Service Monitoring Tool");
+
+                break;
+
+            default:
+                System.out.println("Incorrect Choice");
+                break;
             }
-    
 
-        }while (user_service_choice_input != 4);
+        } while (user_service_choice_input != 4);
 
-        
-
-        
-        
         // sm.start();
         // sm.poll(); // 8 seconds
         // sm.poll();
         // sm.poll();
-          
-        }
+
     }
+}

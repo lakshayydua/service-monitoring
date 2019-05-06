@@ -121,13 +121,13 @@ public class MyClientSocket implements Runnable {
 
         if (this.service_latest_status != this.service_status) {
             if (this.service_latest_status) {
-                service_latest_status_str = "Up";
+                service_latest_status_str = "UP";
             }
             else {
-                service_latest_status_str = "Not Up";
+                service_latest_status_str = "NOT UP";
             }
             System.out.println("\n\n** Notification ** - Service Status Changed for HOST IP and Port Number - [" + 
-                                this.host_ip + ":" + Integer.toString(this.port_no) + "] ; New Service Status - " + service_latest_status_str + "\n");
+                                this.host_ip + ":" + Integer.toString(this.port_no) + "] ; New Service Status - [" + service_latest_status_str + "]\n");
             
             this.service_status = this.service_latest_status;
         }
