@@ -5,13 +5,14 @@ import java.net.Socket;
 import java.util.Scanner;
 
 import java.util.logging.ConsoleHandler;
-import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -30,52 +31,7 @@ public class ServiceMonitoring {
         ch.setFormatter(new CustomFormatter());
         logger.addHandler(ch);
 
-        // ch.close();
     }
-
-    private Socket socket;
-    private Scanner scanner;
-
-    private boolean fetch = true; // we start to fetch right away
-
-    void start() {
-        long FETCH_INTERVAL = 8000;
-        ScheduledExecutorService es = Executors.newScheduledThreadPool(1);
-        es.scheduleAtFixedRate(this::scheduleFetch, FETCH_INTERVAL, FETCH_INTERVAL, TimeUnit.MILLISECONDS);
-    }
-
-    synchronized void scheduleFetch() {
-        fetch = true;
-        notify();
-        System.out.print("zxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-    }
-
-    // synchronized boolean awaitFetch() throws InterruptedException {
-    // long WAIT_LIMIT = 20000;
-    // if (!fetch)
-    // wait(WAIT_LIMIT);
-    // try {
-    // return fetch;
-    // } finally {
-    // fetch = false;
-    // }
-    // }
-
-    // Boolean doFetch() {
-    // // try{
-    // // this.EstablishTCPConnectionToServer(InetAddress.getByName(host_ip),
-    // port_no);
-    // // }
-    // // catch (Exception e) {
-    // // System.out.println("Connection Not Established");
-    // // System.out.println(e);
-    // // }
-    // return true;
-    // }
-
-    // Boolean poll() throws InterruptedException {
-    // return awaitFetch() ? doFetch() : false;
-    // }
 
     public static void main(String[] args) throws Exception {
 
@@ -89,9 +45,13 @@ public class ServiceMonitoring {
         String host_ip;
         int port_no;
         int poll_frequency;
+        
+        Map<String, MyClientSocket> client_dict = new Hashtable<String, MyClientSocket>();
 
-        List<MyClientSocket> client_list = new ArrayList<>();
-        int client_index = 0;        
+        String service_config;
+        Integer service_poll_frequency;
+
+        
 
 
         do {
@@ -112,43 +72,57 @@ public class ServiceMonitoring {
             }
 
             sc.nextLine();
+            MyClientSocket cs = new MyClientSocket();
+            MyClientSocket ts;
 
             switch (user_service_choice_input) {
             case 1:
-                MyClientSocket cs = new MyClientSocket();
                 host_ip = cs.get_host_ip();
                 port_no = cs.get_port_number();
                 cs.get_connection(host_ip, port_no, false, 0);
                 break;
 
             case 2:
-                System.out.println(client_index);
-                client_list.add(client_index, new MyClientSocket());
-            
-                host_ip = client_list.get(client_index).get_host_ip();
-                port_no = client_list.get(client_index).get_port_number();
-                poll_frequency = client_list.get(client_index).get_poll_frequency();
-                client_list.get(client_index).get_connection(host_ip, port_no, true, poll_frequency);
-                
-                client_index = client_index + 1;
-                System.out.println(client_index);
+                host_ip = cs.get_host_ip();
+                port_no = cs.get_port_number();
+                poll_frequency = cs.get_poll_frequency();
 
-                // MyClientSocket cs1 = new MyClientSocket();
-                // host_ip = cs1.get_host_ip();
-                // port_no = cs1.get_port_number();
-                // poll_frequency = cs1.get_poll_frequency();
-                // cs1.get_connection(host_ip, port_no, true, poll_frequency);
-                
-                // MyClientSocket cs2 = new MyClientSocket();
-                // host_ip = cs2.get_host_ip();
-                // port_no = cs2.get_port_number();
-                // poll_frequency = cs2.get_poll_frequency();
-                // cs2.get_connection(host_ip, port_no, true, poll_frequency);
+                service_config = host_ip + ":" + Integer.toString(port_no);
+                try {
+                    ts = client_dict.get(service_config);
+                    
+                } catch (NullPointerException e) {
+                    ts = null;
+                }
 
+                if (ts == null) {
+                    System.out.println("xxxxxxxxxxx");
+                    client_dict.put(service_config, new MyClientSocket());
+                }
+                else {
+                    System.out.println("xx");
+                    service_poll_frequency = client_dict.get(service_config).poll_frequency;
+                    
+
+                    if (poll_frequency < service_poll_frequency) {    
+                        client_dict.get(service_config).schedule_again = true; // cancels running schedule
+                        System.out.println("New polling frequency for [" + service_config + "] - " + poll_frequency);
+                        poll_frequency = service_poll_frequency;
+                    }
+                }
+                client_dict.get(service_config).num_clients = client_dict.get(service_config).num_clients + 1;
+                client_dict.get(service_config).get_connection(host_ip, port_no, true, poll_frequency);  
+                
                 break;
 
             case 3:
-                System.out.println("b");
+                System.out.println("Service Config - Number of Client Requests - Status\n");
+
+                for (Map.Entry<String, MyClientSocket> entry : client_dict.entrySet() ) {
+                    System.out.println(entry.getKey() + " - " + Integer.toString(entry.getValue().num_clients) 
+                                        + " - " + entry.getValue().service_latest_status_str);
+                }
+                System.out.println("\n");
                 break;
 
             case 4:
@@ -162,11 +136,6 @@ public class ServiceMonitoring {
             }
 
         } while (user_service_choice_input != 4);
-
-        // sm.start();
-        // sm.poll(); // 8 seconds
-        // sm.poll();
-        // sm.poll();
 
     }
 }

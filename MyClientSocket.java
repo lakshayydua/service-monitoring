@@ -5,6 +5,7 @@ import java.net.Socket;
 import java.util.Scanner;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
@@ -24,6 +25,10 @@ public class MyClientSocket implements Runnable {
     Boolean service_status;
     Boolean service_latest_status;
     String service_latest_status_str;
+
+    Boolean schedule_again;
+
+    int num_clients = 0;
 
     private Thread t;
 
@@ -78,7 +83,8 @@ public class MyClientSocket implements Runnable {
         try {
             this.host_ip = host_ip;
             this.port_no = port_no;
-            this.poll = poll_frequency;
+            this.poll_frequency = poll_frequency;
+            this.schedule_again = false;
 
             this.EstablishTCPConnectionToServer(InetAddress.getByName(host_ip), port_no);
             System.out.println();
@@ -115,19 +121,21 @@ public class MyClientSocket implements Runnable {
         try {
             this.EstablishTCPConnectionToServer(InetAddress.getByName(this.host_ip), this.port_no);
             this.service_latest_status = true;
+            this.service_latest_status_str = "[UP]";
         } catch (Exception e) {
             this.service_latest_status = false;
+            this.service_latest_status_str = "[NOT UP]";
         }
 
         if (this.service_latest_status != this.service_status) {
             if (this.service_latest_status) {
-                service_latest_status_str = "UP";
+                this.service_latest_status_str = "UP";
             }
             else {
-                service_latest_status_str = "NOT UP";
+                this.service_latest_status_str = "NOT UP";
             }
             System.out.println("\n\n** Notification ** - Service Status Changed for HOST IP and Port Number - [" + 
-                                this.host_ip + ":" + Integer.toString(this.port_no) + "] ; New Service Status - [" + service_latest_status_str + "]\n");
+                                this.host_ip + ":" + Integer.toString(this.port_no) + "] ; New Service Status - " + this.service_latest_status_str + "\n");
             
             this.service_status = this.service_latest_status;
         }
@@ -135,7 +143,13 @@ public class MyClientSocket implements Runnable {
 
     public void run() {
         ScheduledExecutorService es = Executors.newScheduledThreadPool(1);
-        es.scheduleAtFixedRate(this::scheduleFetch, 0, this.poll_frequency, TimeUnit.SECONDS);
+        //es.scheduleAtFixedRate(this::scheduleFetch, 0, this.poll_frequency, TimeUnit.SECONDS);
+        // Schedule the task such that it will be executed every second
+        ScheduledFuture<?> scheduledFuture = es.scheduleAtFixedRate(this::scheduleFetch, 0, this.poll_frequency, TimeUnit.SECONDS);
+        
+        if (this.schedule_again) {
+            scheduledFuture.cancel(true);
+        }
     }
 
     public void start() {
