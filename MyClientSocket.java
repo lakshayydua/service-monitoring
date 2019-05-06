@@ -144,7 +144,6 @@ public class MyClientSocket implements Runnable {
             t = new Thread(this);
             t.start();
         }
-
     }
 
     public static void main(String[] args) throws Exception {
